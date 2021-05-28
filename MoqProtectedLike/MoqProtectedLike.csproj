@@ -8,9 +8,10 @@
     <Company />
     <Description>A fully functioning Moq protected solution.</Description>
     <PackageTags>Moq protected</PackageTags>
-    <PackageProjectUrl></PackageProjectUrl>
-    <RepositoryUrl></RepositoryUrl>
+    <PackageProjectUrl>https://github.com/tonyhallett/MoqProtectedLike</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/tonyhallett/MoqProtectedLike</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <PackageLicenseExpression>BSD-3-Clause</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
