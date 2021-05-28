@@ -11,19 +11,12 @@ namespace MoqProtectedLike
 {
 	internal static class MoqTypes
 	{
-		public static Assembly Assembly = typeof(Mock).Assembly;
-		private static Type[] moqTypes;
-		public static Type[] Get
-		{
-			get
-			{
-				if (moqTypes == null)
-				{
-					moqTypes = Assembly.GetTypes();
-				}
-				return moqTypes;
-			}
-		}
+		private static Assembly assembly = typeof(Mock).Assembly;
+		
+		public static Type GetInternalType(string name)
+        {
+			return assembly.GetType(name);
+        }
 	}
 	internal static class ExpressionReconstructorReflection {
 		public static readonly object ExpressionReconstructor;
@@ -32,7 +25,7 @@ namespace MoqProtectedLike
 		static ExpressionReconstructorReflection()
 		{
 			MockConstructorArgumentsProperty = typeof(Mock).GetProperty("ConstructorArguments", BindingFlags.Instance | BindingFlags.NonPublic);
-			var expressionReconstructorType = MoqTypes.Assembly.GetType("Moq.ExpressionReconstructor");
+			var expressionReconstructorType = MoqTypes.GetInternalType("Moq.ExpressionReconstructor");
 			ExpressionReconstructor = expressionReconstructorType.GetProperty("Instance").GetValue(null);
 			ReconstructExpressionMethodOpenGeneric = expressionReconstructorType.GetMethod("ReconstructExpression");
 		}
@@ -65,21 +58,13 @@ namespace MoqProtectedLike
 
 		static MockSetupReflectionExtensions()
 		{
-			var moqTypes = MoqTypes.Get;
-			
-			var conditionType = moqTypes.First(t => t.Name == "Condition");
+			var conditionType = MoqTypes.GetInternalType("Moq.Condition");
 			MockStaticSetupSetMethod = typeof(Mock).GetMethod("SetupSet", BindingFlags.Static | BindingFlags.NonPublic,null,new Type[] { typeof(Mock),typeof(LambdaExpression),conditionType},new ParameterModifier[] { });
 			MockStaticVerifySetMethod = typeof(Mock).GetMethod("VerifySet", BindingFlags.Static | BindingFlags.NonPublic, null, new Type[] { typeof(Mock), typeof(LambdaExpression), typeof(Times), typeof(string) }, new ParameterModifier[] { });
-
-			SetterSetupPhraseTypeOpenGeneric = moqTypes.FirstOrDefault(t =>
-			{
-				return t.Name == "SetterSetupPhrase`2";
-			});
 			
-			VoidSetupPhraseTypeOpenGeneric = moqTypes.FirstOrDefault(t =>
-			{
-				return  t.Name == "VoidSetupPhrase`1";
-			});
+			SetterSetupPhraseTypeOpenGeneric = MoqTypes.GetInternalType("Moq.Language.Flow.SetterSetupPhrase`2");
+			VoidSetupPhraseTypeOpenGeneric = MoqTypes.GetInternalType("Moq.Language.Flow.VoidSetupPhrase`1");
+
 		}
 
 		private static object StaticSetupSet<T>(this Mock<T> mock,Expression<Action<T>> action) where T:class
